@@ -1,0 +1,31 @@
+name: Bug report
+description: Report a problem with OpenQuiz
+labels: [bug]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Tell us what you expected and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include the steps and configuration needed to see the problem.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: OpenQuiz version or commit
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system, browser, and deployment method.
+    validations:
+      required: true
