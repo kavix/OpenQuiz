@@ -33,7 +33,7 @@ func NewHandler() http.Handler {
 			path = "index.html"
 		}
 
-		http.FileServer(http.FS(dist)).ServeHTTP(w, r.Clone(r.Context()))
+		http.ServeFileFS(w, r, dist, path)
 	})
 
 	return securityHeaders(mux)
