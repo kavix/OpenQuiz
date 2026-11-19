@@ -5,6 +5,7 @@ dev:
 
 build:
 	cd web && npm install && npm run build
+	mkdir -p bin
 	go build -o bin/openquiz ./cmd/openquiz
 
 check:
