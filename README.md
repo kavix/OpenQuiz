@@ -2,54 +2,59 @@
 
 OpenQuiz is an open-source, self-hosted live quiz platform for classrooms, meetups, and events. Hosts create quizzes and run games; players join from their phones with a room code and no account.
 
-The project aims to make hosting a quiz simple, keep player access unrestricted, and work reliably on a local network without depending on external services.
+The project is in its early foundation stage. The current app is a runnable Go and Svelte shell with a health endpoint. Live quiz features are being built in the open through the linked GitHub issues.
 
-## Project status
+## What we're building
 
-OpenQuiz is at the planning stage. The first release will focus on a complete, dependable live quiz loop before adding advanced question types or scaling features.
+- Quiz authoring for multiple choice, true/false, and multi-select questions.
+- Live games with a room code, synchronized host and player screens, and no player accounts.
+- Server-side deadlines and scoring, with correct answers kept private until reveal.
+- Reconnection after temporary network interruptions.
+- Post-game reports and CSV exports.
+- Straightforward self-hosting, starting with Docker Compose and SQLite.
+- A local-network friendly app with no required external CDN.
 
-## MVP
+## Tech stack
 
-- Create, edit, duplicate, and delete quizzes.
-- Support multiple choice, true/false, and multi-select questions.
-- Start a live game and let players join with a room code or link.
-- Show synchronized lobby, question, answer, results, leaderboard, and final podium screens.
-- Score correct answers with a speed bonus, calculated on the server.
-- Let players reconnect after a temporary network interruption.
-- Show a post-game report and export results as CSV.
-- Run locally with Docker Compose and SQLite, with persistent data stored in a volume.
+- **Backend:** Go HTTP server.
+- **Frontend:** Svelte and TypeScript, served as embedded static assets.
+- **Current foundation:** Go 1.26+, Node.js 24 LTS+, and npm.
+- **Deployment:** Single application process for the initial setup. Database and Docker support are tracked in follow-up issues.
 
-## Initial technical direction
+## Run locally
 
-- **Backend:** Go HTTP server with WebSocket support.
-- **Frontend:** Svelte and TypeScript, built into static assets served by the backend.
-- **Storage:** SQLite for the first release; keep persistence behind a small interface so PostgreSQL can be added when needed.
-- **Game state:** In memory for active games, with quiz definitions and completed results persisted to SQLite.
-- **Deployment:** One application container plus a persistent data directory. No Redis or external runtime services for a single instance.
+Requirements: Go 1.26 or newer and Node.js 24 LTS or newer.
 
-These choices keep the first self-hosted setup small. The implementation should validate them against real usage before adding multi-instance or enterprise features.
+Build the frontend and backend, then start the server:
 
-## Milestones
+```sh
+make build
+./bin/openquiz
+```
 
-1. **Foundation:** project layout, local development setup, health endpoint, SQLite migration, and Docker Compose.
-2. **Quiz authoring:** quiz and question data model, validation, and basic editor.
-3. **Live game:** room creation, player joining, host controls, WebSocket state updates, answer collection, and scoring.
-4. **Results and resilience:** reconnect flow, final reports, CSV export, and end-to-end manual acceptance checklist.
-5. **Self-hosting release:** backup guidance, configuration reference, security review, and first tagged release.
+Open [http://localhost:8080](http://localhost:8080). The server port defaults to `8080`; set the `PORT` environment variable to change it. The health endpoint is [http://localhost:8080/healthz](http://localhost:8080/healthz).
 
-## Design principles
+For frontend development, start the Go server in one terminal, then run:
 
-- Players should not need accounts.
-- The server is authoritative for game state, deadlines, and scores.
-- Never send correct-answer data to players before the reveal.
-- Escape and validate player-provided names; apply rate limits to room joining.
-- Bundle frontend assets so a LAN installation does not need a CDN.
-- Keep deployment and backup instructions understandable to a non-specialist.
+```sh
+cd web
+npm install
+npm run dev
+```
+
+Vite serves the frontend on port 5173 and proxies `/healthz` to the Go server.
+
+## Project layout
+
+- `cmd/openquiz`: application entry point.
+- `internal/web`: HTTP handlers and embedded frontend assets.
+- `web`: Svelte application and Vite configuration.
+- `.github/workflows/ci.yml`: automated checks for pushes and pull requests.
 
 ## Contributing
 
-The project is being bootstrapped. Contributions, issue reports, and suggestions are welcome. Please open an issue before making a large change so the project can agree on its scope.
+Bug reports, feature ideas, and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) for the development workflow and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community expectations. Please use GitHub's private vulnerability reporting for security issues; see [SECURITY.md](SECURITY.md).
 
 ## License
 
-The project license has not been selected yet. Choose a license before the first public release. AGPL-3.0 supports reciprocal sharing of network-hosted modifications; Apache-2.0 is a permissive alternative.
+OpenQuiz is licensed under the [MIT License](LICENSE).
